@@ -2,14 +2,17 @@ begin
     num1: integer, num2: integer;
     read(num1);
     read(num2);
+
+    write("The maximum number is: ");
     if num1 > num2 then
     {
-        write("The maximum number is");
         write(num1);
     }
     else
     {
-        write("The maximum number is");
         write(num2);
     }
+
+num1 ~ 123;
+"test1"
 end

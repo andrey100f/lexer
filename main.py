@@ -22,17 +22,18 @@ def main():
 
     for line in code:
         line_number += 1
-        words = line.split(" ")
+        words = re.findall(r'[^"\s]+|"[^"]*"', line)
+
+        print(words)
 
         for word in words:
-            word = word.strip("\n")
             while word != "":
                 found = False
                 put = None
-                if word.startswith('"'):
-                    put = re.match(r'(.*)', word)
+                if word[0] == '"':
+                    put = re.match(r'^"([^"]*)"$', word)
                     if put:
-                        found = lex.manage_constants(put.group(1))
+                        found = lex.manage_constants(put.group(0))
                         word = word[put.end(0):]
                 else:
                     for keyword in keywords:
@@ -68,7 +69,7 @@ def main():
                         word = word[put.end(0):]
                         continue
 
-                    put = re.match(r"^[_a-zA-Z][_a-zA-Z0-9]*$", word)
+                    put = re.match(r"^[_a-zA-Z][_a-zA-Z0-9]*", word)
                     if put is not None:
                         if lex.manage_identifiers(put.group(0)):
                             word = word[put.end(0):]
@@ -79,14 +80,12 @@ def main():
 
                     put = re.match(r"^-?[0-9]+(\.[0-9]+)?", word)
                     if put is not None:
-                        test = re.match(r"^-?[0-9]+(\.[0-9]+)?[_a-zA-Z]", word)
-                        if test is not None:
-                            lex.manage_constants(put.group(0))
+                        if lex.manage_constants(put.group(0)):
                             word = word[put.end(0):]
                             continue
-                        else:
-                            print("Error on line " + str(line_number) + "(invalid identifier): " + line)
-                            break
+                    else:
+                        print("Error on line " + str(line_number) + "(invalid identifier): " + line)
+                        break
 
                 if not found:
                     print("Error on line " + str(line_number) + ": " + line)

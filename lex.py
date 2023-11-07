@@ -46,7 +46,7 @@ class Lex:
         self.__fip.add(type_of_atoms["constant"], self.__ts_constants.get_value(constant_value)["value"])
 
     def manage_constants(self, constant):
-        put_string_value = re.match(r'[^"]*("([^"]*)")[^"]*', constant)
+        put_string_value = re.match(r'^"([^"]*)"$', constant)
         if put_string_value:
             string_value = put_string_value.group(1)
             self.add_constants_to_ts(string_value)
