@@ -9,7 +9,10 @@ class TS:
         self.content[key] = value
 
     def get_value(self, key):
-        return self.content[key]
+        return self.content.get(key)
 
     def get_items(self):
         return self.content.items()
+
+    def get_keys(self):
+        return self.content.keys()

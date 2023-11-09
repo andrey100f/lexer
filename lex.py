@@ -7,6 +7,7 @@ class Lex:
         self.__ts_identifiers = ts_identifiers
         self.__ts_constants = ts_constants
         self.__fip = fip
+        self.__length = 0
 
     def get_ts_identifiers(self):
         return self.__ts_identifiers.get_items()
@@ -24,11 +25,12 @@ class Lex:
         if not (0 < len(identifier) < 250):
             return False
         else:
-            if identifier not in self.get_ts_identifiers():
+            if identifier not in self.__ts_identifiers.get_keys():
                 value = {
                     "type": type_of_atoms["identifier"],
-                    "value": self.__ts_identifiers.get_length() + self.__ts_constants.get_length(),
+                    "value": self.__length
                 }
+                self.__length += 1
                 self.__ts_identifiers.set(identifier, value)
 
             self.__fip.add(type_of_atoms["identifier"], self.__ts_identifiers.get_value(identifier)["value"])
@@ -36,11 +38,12 @@ class Lex:
         return True
 
     def add_constants_to_ts(self, constant_value):
-        if constant_value not in self.get_ts_constants():
+        if constant_value not in self.__ts_constants.get_keys():
             value = {
                 "type": type_of_atoms["constant"],
-                "value": self.__ts_identifiers.get_length() + self.__ts_constants.get_length(),
+                "value": self.__length
             }
+            self.__length += 1
             self.__ts_constants.set(constant_value, value)
 
         self.__fip.add(type_of_atoms["constant"], self.__ts_constants.get_value(constant_value)["value"])

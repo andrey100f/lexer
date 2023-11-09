@@ -24,7 +24,7 @@ def main():
         line_number += 1
         words = re.findall(r'[^"\s]+|"[^"]*"', line)
 
-        print(words)
+        # print(words)
 
         for word in words:
             while word != "":
@@ -58,6 +58,13 @@ def main():
                         word = word[put.end(0):]
                         continue
 
+                    if word[0] == "-" and len(word) > 1:
+                        put = re.match(r"^-?[0-9]+(\.[0-9]+)?", word)
+                        if put is not None:
+                            if lex.manage_constants(put.group(0)):
+                                word = word[put.end(0):]
+                                continue
+
                     for operator in operators:
                         result = re.match('^' + re.escape(operator), word)
                         if result is not None:
@@ -69,6 +76,16 @@ def main():
                         word = word[put.end(0):]
                         continue
 
+                    if word[0] != "0" or (word[0] == "0" and len(word) == 1):
+                        put = re.match(r"^-?[0-9]+(\.[0-9]+)?", word)
+                        if put is not None:
+                            if lex.manage_constants(put.group(0)):
+                                word = word[put.end(0):]
+                                continue
+                    else:
+                        print("Error on line " + str(line_number) + "(invalid identifier): " + line)
+                        break
+
                     put = re.match(r"^[_a-zA-Z][_a-zA-Z0-9]*", word)
                     if put is not None:
                         if lex.manage_identifiers(put.group(0)):
@@ -77,15 +94,6 @@ def main():
                         else:
                             print("Lexical error on line " + str(line_number) + "(length of identifier)" + line)
                             break
-
-                    put = re.match(r"^-?[0-9]+(\.[0-9]+)?", word)
-                    if put is not None:
-                        if lex.manage_constants(put.group(0)):
-                            word = word[put.end(0):]
-                            continue
-                    else:
-                        print("Error on line " + str(line_number) + "(invalid identifier): " + line)
-                        break
 
                 if not found:
                     print("Error on line " + str(line_number) + ": " + line)
